@@ -1,6 +1,6 @@
 {
-  "name": "docmost",
-  "homepage": "https://docmost.com",
+  "name": "Proergy Document",
+  "homepage": "wwww.proergypower.com",
   "version": "0.24.1",
   "private": true,
   "scripts": {
@@ -15,6 +15,8 @@
     "server:dev": "nx run server:start:dev",
     "server:start": "nx run server:start:prod",
     "email:dev": "nx run server:email:dev",
+    "server-start": "cross-env NODE_ENV=production pm2 start ecosystem.config.js --env production --cwd ./apps/server",
+    "server-stop": "pm2 stop doc-server",
     "dev": "pnpm concurrently -n \"frontend,backend\" -c \"cyan,green\" \"pnpm run client:dev\" \"pnpm run server:dev\""
   },
   "dependencies": {
