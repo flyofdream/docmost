@@ -43,22 +43,18 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         "/api": {
-          target: APP_URL || "http://localhost:3000",
-          changeOrigin: true,
-          secure: false,
-          ws: true,
+          target: APP_URL,
+          changeOrigin: false,
         },
         "/socket.io": {
-          target: APP_URL || "http://localhost:3000",
+          target: APP_URL,
           ws: true,
           rewriteWsOrigin: true,
-          changeOrigin: true,
         },
         "/collab": {
-          target: APP_URL || "http://localhost:3000",
+          target: APP_URL,
           ws: true,
           rewriteWsOrigin: true,
-          changeOrigin: true,
         },
       },
     },
