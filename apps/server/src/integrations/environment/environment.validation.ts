@@ -53,6 +53,11 @@ export class EnvironmentVariables {
   STORAGE_DRIVER: string;
 
   @IsOptional()
+  @IsString()
+  @ValidateIf((obj) => obj.STORAGE_DRIVER === 'local')
+  LOCAL_STORAGE_PATH: string;
+
+  @IsOptional()
   @ValidateIf((obj) => obj.COLLAB_URL != '' && obj.COLLAB_URL != null)
   @IsUrl({ protocols: ['http', 'https'], require_tld: false })
   COLLAB_URL: string;

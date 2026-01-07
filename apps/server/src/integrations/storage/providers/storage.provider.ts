@@ -12,7 +12,7 @@ import {
 } from '../interfaces';
 import { LocalDriver, S3Driver } from '../drivers';
 import * as process from 'node:process';
-import { LOCAL_STORAGE_PATH } from '../../../common/helpers';
+import { getLocalStoragePath } from '../../../common/helpers';
 import path from 'path';
 
 function createStorageDriver(disk: StorageConfig): StorageDriver {
@@ -33,10 +33,15 @@ export const storageDriverConfigProvider = {
 
     switch (driver) {
       case StorageOption.LOCAL:
+        // 优先使用环境变量配置的路径，否则使用默认路径
+        const storagePath = environmentService.getLocalStoragePath() 
+          ? path.resolve(environmentService.getLocalStoragePath())
+          : getLocalStoragePath();
+        
         return {
           driver,
           config: {
-            storagePath: LOCAL_STORAGE_PATH,
+            storagePath,
           },
         };
 
