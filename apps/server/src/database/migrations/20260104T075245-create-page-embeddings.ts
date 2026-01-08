@@ -4,6 +4,47 @@ export async function up(db: Kysely<any>): Promise<void> {
   // Create pgvector extension if it doesn't exist
   await sql`CREATE EXTENSION IF NOT EXISTS vector`.execute(db);
 
+  // Check if table already exists
+  const tableExists = await sql`
+    SELECT EXISTS (
+      SELECT FROM information_schema.tables 
+      WHERE table_schema = 'public' 
+      AND table_name = 'page_embeddings'
+    )
+  `.execute(db);
+
+  const exists = (tableExists.rows[0] as any)?.exists || false;
+
+  if (exists) {
+    // Table already exists, skip creation but ensure indexes exist
+    console.log('Table page_embeddings already exists, skipping creation');
+    
+    // Create indexes if they don't exist
+    await sql`
+      CREATE INDEX IF NOT EXISTS page_embeddings_page_id_idx 
+      ON page_embeddings (page_id)
+    `.execute(db);
+
+    await sql`
+      CREATE INDEX IF NOT EXISTS page_embeddings_workspace_id_idx 
+      ON page_embeddings (workspace_id)
+    `.execute(db);
+
+    await sql`
+      CREATE INDEX IF NOT EXISTS page_embeddings_space_id_idx 
+      ON page_embeddings (space_id)
+    `.execute(db);
+
+    // Create vector similarity search index using HNSW
+    await sql`
+      CREATE INDEX IF NOT EXISTS page_embeddings_embedding_idx 
+      ON page_embeddings 
+      USING hnsw (embedding vector_cosine_ops)
+    `.execute(db);
+    
+    return;
+  }
+
   // Create page_embeddings table
   await db.schema
     .createTable('page_embeddings')
