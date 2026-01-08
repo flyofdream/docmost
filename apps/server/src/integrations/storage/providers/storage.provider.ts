@@ -13,7 +13,7 @@ import {
 import { LocalDriver, S3Driver } from '../drivers';
 import * as process from 'node:process';
 import { getLocalStoragePath } from '../../../common/helpers';
-import path from 'path';
+import * as path from 'path';
 
 function createStorageDriver(disk: StorageConfig): StorageDriver {
   switch (disk.driver) {
